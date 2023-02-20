@@ -2,10 +2,11 @@
 
 {% block content_user %}
 <table border="1">
-    {% for i in employees %}
+    {% for i in users %}
     <tr>
         <td>{{ i['name'] }}</td>
         <td>{{ i['age'] }}</td>
+        <td>{{ i['password'] }}</td>
     </tr>
     {% endfor %}
 </table>

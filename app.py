@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect
 from flask_bootstrap import Bootstrap
 import yaml
 from flask_mysqldb import MySQL
@@ -8,7 +8,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 app = Flask(__name__)
 Bootstrap(app)
 
-db = yaml.safe_load(open('db.yaml'))
+db = yaml.safe_load(open('db1.yaml'))
 app.config['MYSQL_HOST'] = db['mysql_host']
 app.config['MYSQL_USER'] = db['mysql_user']
 app.config['MYSQL_PASSWORD'] = db['mysql_password']
@@ -24,18 +24,21 @@ def index():
         form = request.form
         name = form['name']
         password = form['password']
+        age = form['age']
         cursor = mysql.connection.cursor()
-        cursor.execute("INSERT INTO employee(name, age) VALUES(%s,%s)", (password, name))
+        cursor.execute("INSERT INTO users(name, age, password) VALUES(%s,%s,%s)", (name, age, password))
         mysql.connection.commit()
     return render_template('index.html')
 
-@app.route('/employees')
-def employee():
+@app.route('/users')
+def users():
     cursor = mysql.connection.cursor()
-    result_value = cursor.execute("SELECT * FROM employee")
+    result_value = cursor.execute("SELECT * FROM users")
     if result_value:
-        employees = cursor.fetchall()
-        return render_template('employees.html', employees=employees)
+        users = cursor.fetchall()
+        return render_template('employees.html', users=users)
+    else:
+        return redirect('/')
 
 @app.errorhandler(404)
 def page_not_found(e):

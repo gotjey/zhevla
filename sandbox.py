@@ -1,6 +1,20 @@
-weather_data = [{'city': 'New York', 'temperature': 6.79, 'description': 'broken clouds', 'icon': '04d'}, {'city': 'London', 'temperature': 11.64, 'description': 'overcast clouds', 'icon': '04d'}, {'city': 'Tokyo', 'temperature': 6.33, 'description': 'broken clouds', 'icon': '04n'}]
+import mysql.connector
 
+mydb = mysql.connector.connect(
+  host="bmk0xxjd8bweo7cysbxc-mysql.services.clever-cloud.com",
+  user="bmk0xxjd8bweo7cysbxc",
+  password="9yZpIGSea39lbHQEtdzF",
+  database="zhevla"
+)
 
-for i in weather_data:
-    print(i['city'])
-    print(i['temperature'])
+mycursor = mydb.cursor()
+
+mycursor.execute("CREATE TABLE customers (id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(255), password VARCHAR(255))")
+mydb.commit()
+sql = "INSERT INTO customers (name, address) VALUES (%s, %s)"
+val = ("John", "Highway 21")
+mycursor.execute(sql, val)
+
+mydb.commit()
+
+print(mycursor.rowcount, "record inserted.")
