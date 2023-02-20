@@ -48,7 +48,7 @@ def page_not_found(e):
 @app.route('/weather')
 def weather():
     # список міст, для яких потрібно отримати погоду
-    cities = ['Uman\'', 'Winnipeg', 'Halifax']
+    cities = ['Uman\'', 'Winnipeg', 'Kyiv', 'Okhtyrka']
 
     # ваш ключ API OpenWeatherMap
     api_key = 'ff659fcd92d95f0e223bec0e9ad745bc'
