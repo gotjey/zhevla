@@ -1,0 +1,12 @@
+{% extends 'base_my.html' %}
+
+{% block content_user %}
+<table border="1">
+    {% for i in employees %}
+    <tr>
+        <td>{{ i['name'] }}</td>
+        <td>{{ i['age'] }}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock content_user %}
