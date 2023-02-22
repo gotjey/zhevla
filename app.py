@@ -1,12 +1,13 @@
-from flask import Flask, render_template, request, redirect
+from flask import Flask, render_template, request, redirect, flash
 from flask_bootstrap import Bootstrap
-import yaml
+import yaml, secrets
 from flask_mysqldb import MySQL
 import requests
 from werkzeug.security import check_password_hash, generate_password_hash
 
 app = Flask(__name__)
 Bootstrap(app)
+secret_key = secrets.token_urlsafe(32)
 
 db = yaml.safe_load(open('db1.yaml'))
 app.config['MYSQL_HOST'] = db['mysql_host']
@@ -14,6 +15,7 @@ app.config['MYSQL_USER'] = db['mysql_user']
 app.config['MYSQL_PASSWORD'] = db['mysql_password']
 app.config['MYSQL_DB'] = db['mysql_db']
 app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
+app.secret_key = secret_key
 
 mysql = MySQL(app)
 
@@ -28,7 +30,9 @@ def index():
         cursor = mysql.connection.cursor()
         cursor.execute("INSERT INTO users(name, age, password) VALUES(%s,%s,%s)", (name, age, password))
         mysql.connection.commit()
+        flash("Ми записали всі твої дані. Дякуємо!")
     return render_template('index.html')
+
 
 @app.route('/users')
 def users():
@@ -40,6 +44,7 @@ def users():
     else:
         return redirect('/')
 
+
 @app.errorhandler(404)
 def page_not_found(e):
     return render_template('404.html'), 404
@@ -47,10 +52,7 @@ def page_not_found(e):
 
 @app.route('/weather')
 def weather():
-    # список міст, для яких потрібно отримати погоду
     cities = ['Uman\'', 'Winnipeg', 'Kyiv', 'Okhtyrka']
-
-    # ваш ключ API OpenWeatherMap
     api_key = 'ff659fcd92d95f0e223bec0e9ad745bc'
 
     # список, де зберігаємо інформацію про погоду для кожного міста
